@@ -1052,7 +1052,11 @@
         renderDashboard(standings);
         renderBrasilStatus(standings);
         
-        if (!skipFixture) {
+        // No reconstruir el fixture mientras alguno de sus inputs tenga el foco.
+        // Las estadísticas se actualizan igualmente; solo se omite el HTML de los partidos.
+        const fixtureContainer = document.getElementById('fixtureContainer');
+        const fixtureHasFocus = fixtureContainer && fixtureContainer.contains(document.activeElement);
+        if (!skipFixture && !fixtureHasFocus) {
             renderFixture();
         }
         
@@ -1261,16 +1265,16 @@
                 saveToStorage();
                 const status = document.getElementById('saveStatus');
                 if (status) status.textContent = 'Guardado automáticamente en este celular.';
-                // Mientras se escribe no reconstruimos el fixture para conservar el foco.
-                // La tabla se recalcula al completar el marcador o al salir del campo.
+                // Actualizar tablas y estadísticas en tiempo real sin reconstruir los inputs.
+                renderAll(true);
             }
         }
     });
 
-    // Al salir del input, re-renderizamos el fixture completo para formatear bien
+    // Al confirmar o salir del campo, actualizar estadísticas sin reconstruir el fixture.
     document.getElementById('fixtureContainer').addEventListener('change', (e) => {
         if (e.target.classList.contains('home-goals') || e.target.classList.contains('away-goals')) {
-            renderAll(false);
+            renderAll(true);
         }
     });
 
