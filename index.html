@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Torneo de Integración ALEX · Femenino</title>
+    <style>
+        /* ========== RESET & GLOBAL ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        :root {
+            --brasil-green: #009739;
+            --brasil-yellow: #FFDF00;
+            --brasil-blue: #002776;
+            --bg-dark: #0a0f0a;
+            --card-bg: rgba(12, 25, 14, 0.88);
+            --border-glow: rgba(255, 223, 0, 0.25);
+            --grass-dark: #0d1f11;
+            --grass-light: #132a16;
+            --sidebar-width: 240px;
+            --text-light: #e8f0e8;
+            --text-muted: #8aa08a;
+            --danger: #c0392b;
+            --success: #27ae60;
+            --warning: #f1c40f;
+        }
+
+        body {
+            background: #060b07;
+            background-image:
+                radial-gradient(circle at 20% 30%, #0a1f0e 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #0d2a12 0%, transparent 45%),
+                repeating-linear-gradient(45deg, #0b1a0e 0px, #0b1a0e 2px, #0e1f11 2px, #0e1f11 6px);
+            background-attachment: fixed;
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a140a; }
+        ::-webkit-scrollbar-thumb { background: #1f4a24; border-radius: 10px; border: 1px solid #FFDF0033; }
+        ::-webkit-scrollbar-thumb:hover { background: #009739; }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #0a1a0e 0%, #071108 100%);
+            border-right: 2px solid #1f4a24;
+            box-shadow: 4px 0 25px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+            padding: 16px 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 10px 20px;
+            border-bottom: 1px solid #1f4a2466;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-brand .icon { font-size: 2rem; filter: drop-shadow(0 0 8px #FFDF00); }
+        .sidebar-brand .brand-text { font-size: 1.1rem; font-weight: 900; color: #FFDF00; text-shadow: 1px 1px 0 #002776; line-height: 1.2; }
+        .sidebar-brand .brand-text small { display: block; font-size: 0.6rem; color: #aaa; font-weight: 500; letter-spacing: 1px; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #b8c9b8;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: #1a3320;
+            color: #FFDF00;
+            border-left-color: #FFDF00;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #00973933, #00277633);
+            color: #FFDF00;
+            border-left-color: #FFDF00;
+            font-weight: 700;
+            box-shadow: inset 0 0 15px #FFDF0015;
+        }
+
+        .nav-item .nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+
+        /* ========== MAIN CONTENT ========== */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 22px 28px 60px;
+            max-width: calc(100vw - var(--sidebar-width));
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeSlide 0.35s ease;
+        }
+
+        .section.active-section {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== HEADER ========== */
+        .page-header {
+            background: linear-gradient(135deg, #002776 0%, #009739 100%);
+            padding: 22px 30px;
+            border-radius: 32px 32px 32px 8px;
+            border: 2px solid #FFDF00aa;
+            box-shadow: 0 12px 30px #00000099, 0 0 30px #ffdf0022;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 8px;
+        }
+
+        .page-header .trophy { font-size: 3.2rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        .page-header h1 {
+            font-size: 1.9rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #FFDF00;
+            text-shadow: 2px 2px 0 #002776, 0 0 20px #ffdf00;
+            line-height: 1.1;
+        }
+
+        .page-header .subtitle {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #fff;
+            background: #009739;
+            display: inline-block;
+            padding: 3px 16px;
+            border-radius: 30px;
+            margin-top: 4px;
+            letter-spacing: 2px;
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px 22px;
+            border: 1px solid #1f4a24;
+            box-shadow: 0 12px 28px -8px #000000cc, inset 0 1px 2px #ffffff11;
+            transition: box-shadow 0.25s, transform 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 16px 34px -6px #000, 0 0 0 1px #FFDF0055;
+            transform: translateY(-1px);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            border-left: 6px solid var(--brasil-yellow);
+            padding-left: 14px;
+            margin-bottom: 16px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ========== BRASIL HIGHLIGHT CARD ========== */
+        .brasil-hero {
+            background: linear-gradient(145deg, #002776 0%, #0a3d1f 100%);
+            border: 3px solid var(--brasil-yellow);
+            border-radius: 28px;
+            padding: 24px 28px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            box-shadow: 0 0 30px #ffdf0033, 0 18px 30px -8px black;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .brasil-hero::before {
+            content: "";
+            position: absolute;
+            right: 10px; bottom: -20px;
+            width: 180px;
+            height: 180px;
+            background-image: url('img/brasil.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.08;
+            transform: rotate(10deg);
+            pointer-events: none;
+        }
+
+        .brasil-hero-title {
+            font-size: 2rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #FFDF00;
+            text-shadow: 2px 2px 0 #002776;
+            z-index: 2;
+        }
+
+        .brasil-hero-title img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px #FFDF00);
+        }
+
+        .brasil-hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            z-index: 2;
+        }
+
+        .stat-chip {
+            background: rgba(0,0,0,0.55);
+            border: 1px solid #ffdf0077;
+            border-radius: 20px;
+            padding: 8px 16px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .stat-chip .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: #FFDF00cc; font-weight: 600; }
+        .stat-chip .value { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1.2; text-shadow: 0 0 10px #ffdf0066; }
+
+        /* ========== GRIDS ========== */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+        @media (max-width: 1100px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+        /* ========== TABLE ========== */
+        .table-wrap { overflow-x: auto; border-radius: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 680px; }
+        th {
+            background: #002776cc;
+            color: #FFDF00;
+            padding: 10px 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.6px;
+            border-bottom: 3px solid #ffdf00;
+            white-space: nowrap;
+        }
+        td { padding: 9px 6px; text-align: center; border-bottom: 1px solid #1f4a2455; }
+        tr:last-child td { border-bottom: none; }
+
+        .brasil-row { background: #00973955; box-shadow: inset 0 0 0 2px #ffdf00aa; }
+        .brasil-row td { color: #fff; font-weight: 700; }
+
+        .pos-1, .pos-2 { background: #1b5e1b77; }
+        .pos-3 { background: #7d660877; }
+        .pos-4, .pos-5, .pos-6, .pos-7 { background: #5e1b1b44; }
+
+        .team-cell { display: flex; align-items: center; gap: 10px; justify-content: flex-start; font-weight: 600; white-space: nowrap; }
+        .flag-img { width: 24px; height: 24px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); }
+
+        .legend-indicator {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.75rem; margin-top: 10px; flex-wrap: wrap;
+        }
+        .legend-dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+
+        /* ========== BARS ========== */
+        .bar-chart { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+        .bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
+        .bar-label { width: 130px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .bar-bg { flex: 1; height: 24px; background: #142614; border-radius: 30px; overflow: hidden; box-shadow: inset 0 2px 6px #00000099; border: 1px solid #2a4a2a; min-width: 80px; }
+        .bar-fill {
+            height: 100%; width: 0%; border-radius: 30px;
+            background: linear-gradient(90deg, #009739, #FFDF00);
+            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 12px #ffdf0088;
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 8px; color: #000; font-weight: 800; font-size: 0.7rem;
+            white-space: nowrap;
+        }
+        .brasil-bar .bar-fill { background: linear-gradient(90deg, #FFDF00, #009739); }
+        .bar-pct { width: 56px; text-align: right; font-weight: 800; color: #FFDF00; text-shadow: 0 0 4px #000; flex-shrink: 0; }
+
+        /* ========== FIXTURE ========== */
+        .fixture-day { margin-bottom: 22px; }
+        .fixture-day h3 {
+            color: #FFDF00; font-size: 1.05rem; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+            border-bottom: 1px solid #1f4a24; padding-bottom: 8px;
+        }
+
+        .match-row {
+            display: grid;
+            grid-template-columns: 70px 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+            background: #142614cc;
+            border-radius: 40px;
+            padding: 8px 18px;
+            margin-bottom: 8px;
+            border: 1px solid #2a4a2a;
+            transition: background 0.2s;
+        }
+        .match-row:hover { background: #1c3320; }
+
+        .team-home { display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-weight: 600; text-align: right; }
+        .team-away { display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 600; text-align: left; }
+
+        .match-score {
+            font-weight: 900; font-size: 1.1rem; color: #FFDF00;
+            background: #0a140a; padding: 4px 14px; border-radius: 20px;
+            border: 2px solid #2a4a2a; min-width: 70px; text-align: center;
+            text-shadow: 0 0 8px #009739;
+        }
+
+        .match-score input {
+            width: 38px; text-align: center; font-weight: 800; font-size: 1rem;
+            background: #0a1a0a; border: 2px solid #4caf50; color: #FFDF00;
+            border-radius: 10px; padding: 4px 2px; outline: none;
+        }
+        .match-score input:focus { border-color: #FFDF00; box-shadow: 0 0 10px #ffdf00; }
+
+        .match-time {
+            font-size: 0.75rem; color: #FFDF00cc; font-weight: 700;
+            background: #00277688; padding: 4px 8px; border-radius: 20px;
+            letter-spacing: 0.5px; white-space: nowrap; text-align: center;
+        }
+
+        /* ========== PATH BRASIL ========== */
+        .path-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .path-item {
+            background: #142614cc; border-radius: 40px; padding: 12px 18px;
+            display: flex; align-items: center; gap: 14px;
+            border-left: 8px solid #009739; font-weight: 600;
+            box-shadow: 0 4px 12px #00000044;
+        }
+        .path-item.done { border-left-color: #00e676; background: #0e3d16aa; }
+        .path-item.pending { border-left-color: #FFDF00; background: #1e2a0eaa; opacity: 0.9; }
+        .path-icon { font-size: 1.4rem; }
+
+        /* ========== FINAL BOX ========== */
+        .final-box {
+            display: flex; align-items: center; justify-content: space-around;
+            background: #001d3d; border-radius: 40px; padding: 30px 15px;
+            border: 3px dashed #FFDF00; box-shadow: 0 0 30px #ffdf0033;
+            text-align: center; flex-wrap: wrap; gap: 15px;
+        }
+        .final-team {
+            font-size: 1.8rem; font-weight: 900; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            color: #FFDF00; text-shadow: 0 0 12px black;
+        }
+        .final-team img { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 0 10px #FFDF00); }
+        .final-vs {
+            font-size: 1.8rem; font-weight: 900; color: white;
+            background: #002776; padding: 8px 28px; border-radius: 60px;
+            border: 3px solid #FFDF00; letter-spacing: 2px;
+        }
+
+        /* ========== SCENARIO CARDS ========== */
+        .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .scenario-card {
+            background: #142614cc; border-radius: 18px; padding: 18px;
+            border-left: 6px solid #FFDF00;
+            box-shadow: 0 6px 16px #00000055;
+        }
+        .scenario-card.ideal { border-left-color: #27ae60; }
+        .scenario-card.favorable { border-left-color: #f1c40f; }
+        .scenario-card.risk { border-left-color: #c0392b; }
+        .scenario-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; color: #FFDF00; }
+        .scenario-card p { font-size: 0.85rem; color: #c8d8c8; line-height: 1.5; }
+
+        /* ========== STATS PILLS ========== */
+        .stat-pill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+        .stat-pill {
+            background: #142614cc; border-radius: 16px; padding: 14px 16px;
+            border: 1px solid #2a4a2a; display: flex; flex-direction: column; gap: 4px;
+        }
+        .stat-pill .pill-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #8aa08a; font-weight: 600; }
+        .stat-pill .pill-value { font-size: 1.1rem; font-weight: 800; color: #FFDF00; display: flex; align-items: center; gap: 8px; }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            background: #009739; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 30px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; box-shadow: 0 4px 0 #002776; letter-spacing: 0.5px;
+        }
+        .btn:hover { background: #00b34a; transform: translateY(-1px); box-shadow: 0 5px 0 #002776; }
+        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #002776; }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 900px) {
+            :root { --sidebar-width: 60px; }
+            .sidebar { padding: 12px 4px; }
+            .sidebar-brand .brand-text { display: none; }
+            .sidebar-brand { justify-content: center; padding: 10px 0 16px; }
+            .nav-item { justify-content: center; padding: 14px 8px; font-size: 0; gap: 0; }
+            .nav-item .nav-icon { font-size: 1.4rem; width: auto; }
+            .main { padding: 16px 14px 50px; margin-left: var(--sidebar-width); max-width: calc(100vw - var(--sidebar-width)); }
+            .page-header { flex-direction: column; text-align: center; padding: 18px 16px; }
+            .page-header h1 { font-size: 1.4rem; }
+            .brasil-hero { flex-direction: column; align-items: flex-start; }
+            .stat-chip .value { font-size: 1.2rem; }
+            .match-row { grid-template-columns: 60px 1fr auto 1fr; gap: 6px; padding: 8px 10px; font-size: 0.8rem; }
+            .team-home, .team-away { gap: 4px; }
+            .match-score { font-size: 0.9rem; padding: 3px 8px; min-width: 55px; }
+            .match-score input { width: 30px; font-size: 0.85rem; }
+            .bar-label { width: 95px; font-size: 0.8rem; }
+            .bar-pct { width: 48px; font-size: 0.75rem; }
+            .flag-img { width: 18px; height: 18px; }
+        }
+
+        @media (max-width: 500px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 1.1rem; }
+            .brasil-hero-title { font-size: 1.4rem; }
+            .brasil-hero-title img { width: 32px; height: 32px; }
+            .stat-chip { min-width: 65px; padding: 6px 10px; }
+            .stat-chip .value { font-size: 1rem; }
+            .match-row { grid-template-columns: 1fr auto 1fr; }
+            .match-time { display: none; }
+        }
+    
+        /* ========== PWA / EXPERIENCIA MÓVIL ========== */
+        .bottom-nav { display:none; }
+        .install-hint {
+            display:none; margin: 0 0 16px; padding: 12px 14px;
+            border:1px solid #FFDF0066; border-radius:14px;
+            background:linear-gradient(135deg,#002776aa,#00973944);
+            color:#e8f0e8; font-size:.82rem; line-height:1.5;
+        }
+        .install-hint strong { color:#FFDF00; }
+        .save-status { color:#8ee6a0; font-size:.78rem; margin-top:8px; }
+        .fixture-help {
+            color:#c8d8c8; font-size:.86rem; line-height:1.5;
+            margin:0 0 14px; padding:10px 12px; border-radius:12px;
+            background:#00973918; border:1px solid #00973955;
+        }
+        .match-row { min-width:0; }
+        .match-score input { width:42px; min-height:42px; font-size:1.05rem; }
+        .config-actions { display:flex; flex-wrap:wrap; gap:10px; }
+        .config-actions .btn { min-height:44px; }
+        @media (max-width: 760px) {
+            :root { --sidebar-width: 0px; }
+            html { scroll-behavior:smooth; }
+            body { padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
+            .sidebar { display:none; }
+            .main {
+                margin:0; max-width:100%; width:100%;
+                padding:12px 12px calc(28px + env(safe-area-inset-bottom));
+                gap:14px;
+            }
+            .section { min-width:0; }
+            .page-header {
+                padding:17px 15px; border-radius:20px 20px 20px 7px;
+                gap:10px; flex-direction:row; text-align:left;
+                margin-bottom:12px;
+            }
+            .page-header .trophy { font-size:2rem; flex:0 0 auto; }
+            .page-header h1 { font-size:1.05rem; letter-spacing:.2px; line-height:1.25; }
+            .page-header .subtitle {
+                font-size:.68rem; letter-spacing:.5px; padding:4px 9px;
+                white-space:normal;
+            }
+            .card { padding:15px 13px; border-radius:18px; }
+            .card h2 { font-size:1rem; padding-left:10px; margin-bottom:12px; }
+            .grid-2,.grid-3 { grid-template-columns:minmax(0,1fr); gap:12px; }
+            .stat-pill-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            .brasil-hero { padding:15px; border-radius:18px; }
+            .brasil-hero-title { font-size:1.3rem; }
+            .stat-chip { min-width:0; flex:1 1 28%; padding:8px 9px; }
+            .stat-chip .label { font-size:.64rem; }
+            .stat-chip .value { font-size:1rem; }
+            .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+            table { min-width:650px; font-size:.78rem; }
+            th,td { padding:9px 7px; white-space:nowrap; }
+            .match-row {
+                display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+                gap:5px; padding:10px 7px; border-radius:12px;
+                font-size:.78rem; align-items:center;
+            }
+            .match-time { display:none; }
+            .team-home,.team-away { min-width:0; gap:4px; }
+            .team-home { justify-content:flex-end; }
+            .team-away { justify-content:flex-start; }
+            .team-home span,.team-away span {
+                overflow-wrap:anywhere; line-height:1.15; font-size:.76rem;
+            }
+            .match-score { min-width:94px; display:flex; align-items:center; justify-content:center; gap:3px; padding:4px; }
+            .match-score input { width:35px; min-width:0; min-height:42px; padding:4px 1px; border-radius:9px; }
+            .flag-img { width:22px; height:22px; flex:0 0 auto; }
+            .fixture-day { margin-bottom:16px; }
+            .fixture-day h3 { font-size:.9rem; }
+            .scenario-grid { grid-template-columns:1fr; gap:10px; }
+            .bottom-nav {
+                position:fixed; z-index:999; left:0; right:0; bottom:0;
+                display:grid; grid-template-columns:repeat(5,minmax(0,1fr));
+                padding:7px 5px calc(7px + env(safe-area-inset-bottom));
+                background:rgba(5,14,7,.96); backdrop-filter:blur(16px);
+                border-top:1px solid #FFDF0044; box-shadow:0 -8px 24px #0009;
+            }
+            .bottom-nav .nav-item {
+                display:flex; flex-direction:column; align-items:center; justify-content:center;
+                gap:3px; margin:0; padding:5px 2px; border:0; border-radius:10px;
+                color:#a9b9a9; font-size:.62rem; line-height:1.1; text-align:center;
+                min-width:0; background:transparent;
+            }
+            .bottom-nav .nav-item .nav-icon { width:auto; font-size:1.15rem; }
+            .bottom-nav .nav-item.active {
+                color:#FFDF00; background:#00973924; box-shadow:none;
+            }
+            .install-hint { display:block; }
+            .bar-label { width:88px; font-size:.72rem; }
+            .bar-pct { width:43px; font-size:.7rem; }
+            .bar-row { gap:5px; }
+            .path-item { gap:7px; padding:10px 8px; }
+            .final-box { gap:10px; }
+            .final-team img { width:54px; height:54px; }
+        }
+        @media (max-width:380px) {
+            .main { padding-left:8px; padding-right:8px; }
+            .card { padding:12px 9px; }
+            .match-score { min-width:82px; }
+            .match-score input { width:31px; }
+            .bottom-nav .nav-item { font-size:.56rem; }
+        }
+
+    </style>
+
+    <meta name="theme-color" content="#071108">
+    <meta name="description" content="Seguimiento personal del Torneo de Integración ALEX Femenino. Fixture, resultados y tabla de posiciones.">
+    <meta name="application-name" content="Torneo ALEX">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Torneo ALEX">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+    <link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+</head>
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span class="icon">🏆</span>
+        <div class="brand-text">ALEX<small>Femenino</small></div>
+    </div>
+    <nav id="navMenu">
+        <a class="nav-item active" data-section="dashboard"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a class="nav-item" data-section="brasil-center"><span class="nav-icon">🇧🇷</span> Centro de Mando Brasil</a>
+        <a class="nav-item" data-section="standings"><span class="nav-icon">🏆</span> Tabla de Posiciones</a>
+        <a class="nav-item" data-section="positioning"><span class="nav-icon">📈</span> Posicionamiento Actual</a>
+        <a class="nav-item" data-section="montecarlo"><span class="nav-icon">🎲</span> Simulación Monte Carlo</a>
+        <a class="nav-item" data-section="fixture"><span class="nav-icon">⚽</span> Fixture</a>
+        <a class="nav-item" data-section="brasil-path"><span class="nav-icon">🛣️</span> Camino de Brasil</a>
+        <a class="nav-item" data-section="scenarios"><span class="nav-icon">🏅</span> Escenarios de Clasificación</a>
+        <a class="nav-item" data-section="final"><span class="nav-icon">🏆</span> Final Proyectada</a>
+        <a class="nav-item" data-section="stats"><span class="nav-icon">📊</span> Estadísticas</a>
+        <a class="nav-item" data-section="config"><span class="nav-icon">⚙️</span> Configuración</a>
+    </nav>
+</aside>
+
+
+<nav class="bottom-nav" aria-label="Navegación principal">
+    <a href="#" class="nav-item active" data-section="dashboard"><span class="nav-icon">🏠</span>Inicio</a>
+    <a href="#" class="nav-item" data-section="standings"><span class="nav-icon">🏆</span>Tabla</a>
+    <a href="#" class="nav-item" data-section="fixture"><span class="nav-icon">⚽</span>Partidos</a>
+    <a href="#" class="nav-item" data-section="montecarlo"><span class="nav-icon">🎲</span>Simular</a>
+    <a href="#" class="nav-item" data-section="config"><span class="nav-icon">⚙️</span>Más</a>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<main class="main" id="mainContent">
+    <div class="install-hint"><strong>📲 Instalá Torneo ALEX:</strong> abrí el menú del navegador y elegí <em>Agregar a pantalla principal</em> o <em>Instalar aplicación</em>.</div>
+
+    <!-- DASHBOARD -->
+    <section id="section-dashboard" class="section active-section">
+        <div class="page-header">
+            <span class="trophy">🏆</span>
+            <div>
+                <h1>Torneo de Integración ALEX</h1>
+                <div class="subtitle">Categoría Femenino · Dashboard</div>
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="card">
+                <h2>📊 Resumen rápido</h2>
+                <div id="dashboardQuickStats" style="display:flex; flex-wrap:wrap; gap:16px;"></div>
+            </div>
+            <div class="card">
+                <h2>🇧🇷 Brasil en números</h2>
+                <div id="dashboardBrasilSummary"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CENTRO DE MANDO BRASIL -->
+    <section id="section-brasil-center" class="section">
+        <div class="page-header">
+            <span class="trophy">🇧🇷</span>
+            <div>
+                <h1>Centro de Mando Brasil</h1>
+                <div class="subtitle">Seguimiento en tiempo real</div>
+            </div>
+        </div>
+
+        <div class="brasil-hero" id="brasilHeroCard">
+            <div class="brasil-hero-title"><img src="img/brasil.png" alt="Brasil"> Brasil</div>
+            <div class="brasil-hero-stats" id="brasilHeroStats"></div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 6px;">
+            <div class="card">
+                <h2>⚡ Estado actual</h2>
+                <div id="brasilStatusDetail"></div>
+            </div>
+            <div class="card">
+                <h2>🎯 Próximo partido</h2>
+                <div id="brasilNextMatchDetail"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TABLA DE POSICIONES -->
+    <section id="section-standings" class="section">
+        <div class="page-header">
+            <span class="trophy">🏆</span>
+            <div>
+                <h1>Tabla de Posiciones</h1>
+                <div class="subtitle">Actualizada automáticamente</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Pos</th><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th></tr>
+                    </thead>
+                    <tbody id="standingsBody"></tbody>
+                </table>
+            </div>
+            <div class="legend-indicator">
+                <span class="legend-dot" style="background:#1b5e1b;"></span> Clasifica a la final
+                <span class="legend-dot" style="background:#7d6608; margin-left:12px;"></span> Zona de pelea
+                <span class="legend-dot" style="background:#5e1b1b; margin-left:12px;"></span> Fuera de clasificación
+            </div>
+        </div>
+    </section>
+
+    <!-- POSICIONAMIENTO ACTUAL -->
+    <section id="section-positioning" class="section">
+        <div class="page-header">
+            <span class="trophy">📈</span>
+            <div>
+                <h1>Posición actual rumbo a la final</h1>
+                <div class="subtitle">Índice de posicionamiento (no simulación)</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>📊 Ranking porcentual</h2>
+            <div id="positioningBars" class="bar-chart"></div>
+            <p style="font-size:0.75rem; color:#8aa08a; margin-top:14px;">*Calculado con puntos, diferencia de gol, goles a favor, distancia al tercero y partidos pendientes.</p>
+        </div>
+    </section>
+
+    <!-- MONTE CARLO -->
+    <section id="section-montecarlo" class="section">
+        <div class="page-header">
+            <span class="trophy">🎲</span>
+            <div>
+                <h1>Probabilidad matemática de clasificar a la final</h1>
+                <div class="subtitle">10.000 simulaciones de partidos pendientes</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>🎯 Probabilidad de clasificación</h2>
+            <div id="monteCarloBars" class="bar-chart"></div>
+        </div>
+        <div class="grid-2" style="margin-top:16px;">
+            <div class="card">
+                <h2>🇧🇷 Brasil · Probabilidad de clasificar</h2>
+                <div style="font-size:2.8rem; font-weight:900; color:#FFDF00; text-shadow:0 0 20px #009739;" id="brasilMCBig">--%</div>
+            </div>
+            <div class="card">
+                <h2>🏆 Probabilidad de salir campeón</h2>
+                <div id="championProbs" class="bar-chart" style="margin-top:4px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FIXTURE -->
+    <section id="section-fixture" class="section">
+        <div class="page-header">
+            <span class="trophy">⚽</span>
+            <div>
+                <h1>Fixture completo</h1>
+                <div class="subtitle">Fechas 1, 2 y 3 · Final 16:20</div>
+            </div>
+        </div>
+        <div class="card">
+            <p class="fixture-help">Ingresá los goles de ambos equipos. Al completar el marcador, la tabla, las estadísticas y las proyecciones se actualizarán automáticamente. Los cambios se guardan en este celular.</p>
+            <div id="fixtureContainer"></div>
+            <div class="save-status" id="saveStatus" aria-live="polite">Los resultados se guardan automáticamente.</div>
+        </div>
+    </section>
+
+    <!-- CAMINO DE BRASIL -->
+    <section id="section-brasil-path" class="section">
+        <div class="page-header">
+            <span class="trophy">🛣️</span>
+            <div>
+                <h1>Camino de Brasil</h1>
+                <div class="subtitle">Cronología de partidos</div>
+            </div>
+        </div>
+        <div class="card">
+            <ul class="path-list" id="brasilPathList"></ul>
+        </div>
+    </section>
+
+    <!-- ESCENARIOS DE CLASIFICACIÓN -->
+    <section id="section-scenarios" class="section">
+        <div class="page-header">
+            <span class="trophy">🏅</span>
+            <div>
+                <h1>¿Qué necesita Brasil?</h1>
+                <div class="subtitle">Escenarios de clasificación</div>
+            </div>
+        </div>
+        <div class="scenario-grid" id="scenarioContainer"></div>
+        <div class="card" style="margin-top:20px;">
+            <h2>🔍 Análisis Fecha 2</h2>
+            <div id="fecha2Analysis"></div>
+        </div>
+        <div class="card" style="margin-top:16px;">
+            <h2>🔍 Análisis Fecha 3</h2>
+            <div id="fecha3Analysis"></div>
+        </div>
+        <div class="card" style="margin-top:16px;">
+            <h2>⚡ Impacto de resultados en la probabilidad de Brasil</h2>
+            <div id="impactAnalysis" class="grid-3" style="margin-top:8px;"></div>
+        </div>
+    </section>
+
+    <!-- FINAL PROYECTADA -->
+    <section id="section-final" class="section">
+        <div class="page-header">
+            <span class="trophy">🏆</span>
+            <div>
+                <h1>Final Proyectada</h1>
+                <div class="subtitle">Si el torneo terminara hoy · 16:20</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="final-box" id="finalProjectionBox"></div>
+        </div>
+    </section>
+
+    <!-- ESTADÍSTICAS -->
+    <section id="section-stats" class="section">
+        <div class="page-header">
+            <span class="trophy">📊</span>
+            <div>
+                <h1>Estadísticas del torneo</h1>
+                <div class="subtitle">Rankings y líderes</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="stat-pill-grid" id="statsPills"></div>
+        </div>
+        <div class="grid-2" style="margin-top:16px;">
+            <div class="card">
+                <h2>⚽ Ranking ofensivo</h2>
+                <div id="offensiveRanking" class="bar-chart"></div>
+            </div>
+            <div class="card">
+                <h2>🛡️ Ranking defensivo</h2>
+                <div id="defensiveRanking" class="bar-chart"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONFIGURACIÓN -->
+    <section id="section-config" class="section">
+        <div class="page-header">
+            <span class="trophy">⚙️</span>
+            <div>
+                <h1>Configuración</h1>
+                <div class="subtitle">Gestión de datos</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>🗑️ Restablecer datos</h2>
+            <p style="font-size:0.9rem; color:#c8d8c8; margin-bottom:16px;">Elimina todos los resultados ingresados en fechas 2 y 3. La fecha 1 se mantiene intacta.</p>
+            <div class="config-actions">
+                <button class="btn" id="resetDataBtn">Restablecer resultados editables</button>
+                <button class="btn" id="exportDataBtn" type="button">Exportar respaldo</button>
+                <label class="btn" for="importDataInput" style="display:inline-flex;align-items:center;cursor:pointer;">Importar respaldo</label>
+                <input id="importDataInput" type="file" accept="application/json,.json" style="display:none;">
+            </div>
+            <p style="font-size:.82rem;color:#a9b9a9;margin-top:12px;line-height:1.5;">El respaldo permite recuperar tus resultados si cambiás de celular o navegador.</p>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    /* ============================================================
+       DATOS OFICIALES DEL TORNEO (FIXTURE EXACTO)
+    ============================================================ */
+    const TEAMS = [
+        { name: 'Brasil', img: 'img/brasil.png' },
+        { name: 'Argentina', img: 'img/argentina.png' },
+        { name: 'España', img: 'img/espana.png' },
+        { name: 'Inglaterra', img: 'img/inglaterra.png' },
+        { name: 'Bélgica', img: 'img/belgica.png' },
+        { name: 'Noruega', img: 'img/noruega.png' },
+        { name: 'Paraguay', img: 'img/paraguay.png' }
+    ];
+    
+    const TEAM_NAMES = TEAMS.map(t => t.name);
+    const teamImg = name => (TEAMS.find(t => t.name === name) || {}).img || '';
+
+    // ---------------- FECHA 1 (7 partidos, resultados fijos) ----------------
+    const FECHA1 = [
+        { time: '13:30', home: 'Brasil', away: 'España', homeGoals: 6, awayGoals: 0 },
+        { time: '13:55', home: 'Argentina', away: 'Inglaterra', homeGoals: 1, awayGoals: 2 },
+        { time: '14:20', home: 'Bélgica', away: 'Paraguay', homeGoals: 0, awayGoals: 3 },
+        { time: '14:45', home: 'España', away: 'Noruega', homeGoals: 0, awayGoals: 9 },
+        { time: '15:10', home: 'Argentina', away: 'Brasil', homeGoals: 1, awayGoals: 3 },
+        { time: '15:35', home: 'Bélgica', away: 'Inglaterra', homeGoals: 1, awayGoals: 3 },
+        { time: '16:00', home: 'Noruega', away: 'Paraguay', homeGoals: 3, awayGoals: 0 }
+    ];
+
+    // ---------------- FECHA 2 (7 partidos, resultados editables) ----------------
+    const FECHA2 = [
+        { time: '13:30', home: 'Bélgica', away: 'Brasil', homeGoals: null, awayGoals: null },
+        { time: '13:55', home: 'España', away: 'Inglaterra', homeGoals: null, awayGoals: null },
+        { time: '14:20', home: 'Argentina', away: 'Paraguay', homeGoals: null, awayGoals: null },
+        { time: '14:45', home: 'Brasil', away: 'Noruega', homeGoals: null, awayGoals: null },
+        { time: '15:10', home: 'Bélgica', away: 'España', homeGoals: null, awayGoals: null },
+        { time: '15:35', home: 'Inglaterra', away: 'Paraguay', homeGoals: null, awayGoals: null },
+        { time: '16:00', home: 'Argentina', away: 'Noruega', homeGoals: null, awayGoals: null }
+    ];
+
+    // ---------------- FECHA 3 (7 partidos, resultados editables) ----------------
+    const FECHA3 = [
+        { time: '12:30', home: 'Brasil', away: 'Inglaterra', homeGoals: null, awayGoals: null },
+        { time: '12:55', home: 'España', away: 'Paraguay', homeGoals: null, awayGoals: null },
+        { time: '13:20', home: 'Argentina', away: 'Bélgica', homeGoals: null, awayGoals: null },
+        { time: '13:45', home: 'Inglaterra', away: 'Noruega', homeGoals: null, awayGoals: null },
+        { time: '14:10', home: 'Brasil', away: 'Paraguay', homeGoals: null, awayGoals: null },
+        { time: '14:35', home: 'Argentina', away: 'España', homeGoals: null, awayGoals: null },
+        { time: '15:00', home: 'Bélgica', away: 'Noruega', homeGoals: null, awayGoals: null }
+    ];
+
+    // Se conservan referencias a los mismos partidos editables para que
+    // cargar un resultado actualice también cálculos, tabla y simulaciones.
+    const ALL_MATCHES = [
+        ...FECHA1.map(m => Object.assign(m, { day: 1, fixed: true })),
+        ...FECHA2.map(m => Object.assign(m, { day: 2, fixed: false })),
+        ...FECHA3.map(m => Object.assign(m, { day: 3, fixed: false }))
+    ];
+
+    /* ============================================================
+       PERSISTENCIA
+    ============================================================ */
+    const STORAGE_KEY = 'alex_torneo_femenino_v4';
+
+    function loadFromStorage() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            const saved = JSON.parse(raw);
+            if (!Array.isArray(saved)) return;
+            [...FECHA2, ...FECHA3].forEach(m => {
+                const found = saved.find(s => s.day === m.day && s.home === m.home && s.away === m.away);
+                if (found) {
+                    m.homeGoals = found.homeGoals;
+                    m.awayGoals = found.awayGoals;
+                }
+            });
+        } catch (e) { console.warn('Error cargando localStorage', e); }
+    }
+
+    function saveToStorage() {
+        const data = [...FECHA2, ...FECHA3]
+            .filter(m => m.homeGoals !== null && m.awayGoals !== null && m.homeGoals !== undefined && m.awayGoals !== undefined)
+            .map(m => ({ day: m.day, home: m.home, away: m.away, homeGoals: m.homeGoals, awayGoals: m.awayGoals }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    /* ============================================================
+       CÁLCULOS Y ESTADÍSTICAS
+    ============================================================ */
+    function applyMatch(home, away, hg, ag, stats) {
+        if (hg === null || ag === null || hg === undefined || ag === undefined) return;
+        stats[home].PJ++; stats[away].PJ++;
+        stats[home].GF += hg; stats[away].GF += ag;
+        stats[home].GC += ag; stats[away].GC += hg;
+        if (hg > ag) {
+            stats[home].PG++; stats[home].PTS += 3; stats[away].PP++;
+        } else if (hg < ag) {
+            stats[away].PG++; stats[away].PTS += 3; stats[home].PP++;
+        } else {
+            stats[home].PE++; stats[away].PE++; stats[home].PTS += 1; stats[away].PTS += 1;
+        }
+    }
+
+    function computeStandings() {
+        const stats = {};
+        TEAM_NAMES.forEach(t => stats[t] = { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0, DG:0, PTS:0 });
+        ALL_MATCHES.forEach(m => applyMatch(m.home, m.away, m.homeGoals, m.awayGoals, stats));
+        const arr = TEAM_NAMES.map(name => ({ name, img: teamImg(name), ...stats[name] }));
+        arr.forEach(t => t.DG = t.GF - t.GC);
+        arr.sort((a, b) => b.PTS - a.PTS || b.DG - a.DG || b.GF - a.GF);
+        return arr;
+    }
+
+    function computePositioningIndex(standings) {
+        const maxPTS = Math.max(...standings.map(t => t.PTS), 1);
+        const maxDG = Math.max(...standings.map(t => Math.abs(t.DG)), 1);
+        const third = standings[2] || { PTS: 0 };
+        return standings.map(t => {
+            const ptsF = t.PTS / maxPTS;
+            const dgF = (t.DG + maxDG) / (2 * maxDG + 0.01);
+            const distF = 1 - Math.min(1, Math.max(0, third.PTS - t.PTS) / 10);
+            const pendingF = Math.max(0, 6 - t.PJ) / 6;
+            const score = (ptsF * 0.45 + dgF * 0.25 + distF * 0.2 + pendingF * 0.1) * 100;
+            return { name: t.name, img: t.img, score: Math.min(100, Math.round(score * 10) / 10), PTS: t.PTS, DG: t.DG };
+        }).sort((a, b) => b.score - a.score);
+    }
+
+    function poisson(l) {
+        const L = Math.exp(-l); let k = 0, p = 1;
+        do { k++; p *= Math.random(); } while (p > L);
+        return k - 1;
+    }
+
+    function simulateMonteCarlo(iterations = 5000) {
+        const pendingSim = ALL_MATCHES.filter(m => m.fixed === false &&
+            (m.homeGoals === null || m.awayGoals === null || m.homeGoals === undefined || m.awayGoals === undefined));
+        const clasif = {}, champion = {};
+        TEAM_NAMES.forEach(t => { clasif[t] = 0; champion[t] = 0; });
+
+        for (let i = 0; i < iterations; i++) {
+            const stats = {};
+            TEAM_NAMES.forEach(t => stats[t] = { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0, DG:0, PTS:0 });
+            ALL_MATCHES.forEach(m => {
+                if (m.fixed === true || (m.homeGoals !== null && m.awayGoals !== null &&
+                    m.homeGoals !== undefined && m.awayGoals !== undefined)) {
+                    applyMatch(m.home, m.away, m.homeGoals, m.awayGoals, stats);
+                }
+            });
+            pendingSim.forEach(m => {
+                const hg = poisson(1.4), ag = poisson(1.1);
+                applyMatch(m.home, m.away, hg, ag, stats);
+            });
+            const arr = TEAM_NAMES.map(name => ({
+                name, PTS: stats[name].PTS, DG: stats[name].GF - stats[name].GC,
+                GF: stats[name].GF, PJ: stats[name].PJ, GC: stats[name].GC
+            })).sort((a, b) => b.PTS - a.PTS || b.DG - a.DG || b.GF - a.GF);
+            arr[0] && clasif[arr[0].name]++;
+            arr[1] && clasif[arr[1].name]++;
+
+            // La final se simula entre los dos primeros, usando ataque y defensa
+            // observados en cada iteración, en lugar de asignar 50/50 arbitrariamente.
+            if (arr[0] && arr[1]) {
+                const a = arr[0], b = arr[1];
+                const lambdaA = Math.max(0.35, Math.min(3.2, ((a.PJ ? a.GF / a.PJ : 1.4) + (b.PJ ? b.GC / b.PJ : 1.1)) / 2));
+                const lambdaB = Math.max(0.35, Math.min(3.2, ((b.PJ ? b.GF / b.PJ : 1.1) + (a.PJ ? a.GC / a.PJ : 1.4)) / 2));
+                const finalA = poisson(lambdaA), finalB = poisson(lambdaB);
+                if (finalA > finalB) champion[a.name]++;
+                else if (finalB > finalA) champion[b.name]++;
+                else champion[Math.random() < 0.5 ? a.name : b.name]++;
+            }
+        }
+        const probClasif = {}, probChamp = {};
+        TEAM_NAMES.forEach(t => {
+            probClasif[t] = Math.round((clasif[t] / iterations) * 1000) / 10;
+            probChamp[t] = Math.round((champion[t] / iterations) * 1000) / 10;
+        });
+        return { probClasif, probChamp };
+    }
+
+    /* ============================================================
+       RENDERIZADO
+    ============================================================ */
+    let currentMC = null;
+    let isRendering = false; // Bandera para evitar re-renderizados mientras se escribe
+
+    function renderAll(skipFixture = false) {
+        if (isRendering) return;
+        isRendering = true;
+        
+        const standings = computeStandings();
+        renderBrasilHero(standings);
+        renderStandingsTable(standings);
+        renderPositioning(standings);
+        renderMonteCarlo();
+        renderBrasilPath();
+        renderFinal(standings);
+        renderScenarios(standings);
+        renderStats(standings);
+        renderDashboard(standings);
+        renderBrasilStatus(standings);
+        
+        if (!skipFixture) {
+            renderFixture();
+        }
+        
+        isRendering = false;
+    }
+
+    function renderBrasilHero(standings) {
+        const brasil = standings.find(t => t.name === 'Brasil');
+        const pos = standings.findIndex(t => t.name === 'Brasil') + 1;
+        const next = getNextBrasilMatch();
+        const mcProb = currentMC ? (currentMC.probClasif['Brasil'] || 0) : 0;
+        const container = document.getElementById('brasilHeroStats');
+        if (!container) return;
+        container.innerHTML = `
+            <div class="stat-chip"><div class="label">Posición</div><div class="value">${pos}°</div></div>
+            <div class="stat-chip"><div class="label">Puntos</div><div class="value">${brasil.PTS}</div></div>
+            <div class="stat-chip"><div class="label">GF</div><div class="value">${brasil.GF}</div></div>
+            <div class="stat-chip"><div class="label">GC</div><div class="value">${brasil.GC}</div></div>
+            <div class="stat-chip"><div class="label">DG</div><div class="value">${brasil.DG > 0 ? '+' : ''}${brasil.DG}</div></div>
+            <div class="stat-chip"><div class="label">Próx. partido</div><div class="value" style="font-size:0.9rem;">${next ? next.home + ' vs ' + next.away : '—'}</div></div>
+            <div class="stat-chip"><div class="label">Prob. clasificar</div><div class="value">${mcProb}%</div></div>
+        `;
+    }
+
+    function getNextBrasilMatch() {
+        const pendingBrasil = ALL_MATCHES.filter(m => m.fixed === false &&
+            (m.home === 'Brasil' || m.away === 'Brasil') &&
+            (m.homeGoals === null || m.awayGoals === null || m.homeGoals === undefined || m.awayGoals === undefined));
+        pendingBrasil.sort((a, b) => a.day - b.day || a.time.localeCompare(b.time));
+        return pendingBrasil[0] || null;
+    }
+
+    function renderStandingsTable(standings) {
+        const tbody = document.getElementById('standingsBody');
+        if (!tbody) return;
+        tbody.innerHTML = standings.map((t, i) => {
+            const pos = i + 1;
+            const isBrasil = t.name === 'Brasil';
+            let posClass = '';
+            if (pos <= 2) posClass = 'pos-1';
+            else if (pos === 3) posClass = 'pos-3';
+            else posClass = 'pos-4';
+            if (isBrasil) posClass += ' brasil-row';
+            return `<tr class="${posClass}">
+                <td>${pos}</td>
+                <td><div class="team-cell"><img src="${t.img}" alt="${t.name}" class="flag-img">${t.name}</div></td>
+                <td>${t.PJ}</td><td>${t.PG}</td><td>${t.PE}</td><td>${t.PP}</td>
+                <td>${t.GF}</td><td>${t.GC}</td><td>${t.DG > 0 ? '+' : ''}${t.DG}</td>
+                <td><strong>${t.PTS}</strong></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function renderPositioning(standings) {
+        const indicators = computePositioningIndex(standings);
+        const container = document.getElementById('positioningBars');
+        if (!container) return;
+        container.innerHTML = indicators.map(ind => {
+            const w = Math.min(100, ind.score);
+            const isB = ind.name === 'Brasil';
+            return `<div class="bar-row ${isB ? 'brasil-bar' : ''}">
+                <div class="bar-label"><img src="${ind.img}" alt="${ind.name}" class="flag-img">${ind.name}</div>
+                <div class="bar-bg"><div class="bar-fill" style="width:${w}%;">${ind.score.toFixed(0)}%</div></div>
+                <div class="bar-pct">${ind.score.toFixed(0)}%</div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderMonteCarlo() {
+        currentMC = simulateMonteCarlo(3000);
+        const { probClasif, probChamp } = currentMC;
+        const sorted = TEAM_NAMES.slice().sort((a, b) => probClasif[b] - probClasif[a]);
+        const container = document.getElementById('monteCarloBars');
+        
+        if (container) {
+            container.innerHTML = sorted.map(name => {
+                const p = probClasif[name] || 0;
+                const isB = name === 'Brasil';
+                return `<div class="bar-row ${isB ? 'brasil-bar' : ''}">
+                    <div class="bar-label"><img src="${teamImg(name)}" alt="${name}" class="flag-img">${name}</div>
+                    <div class="bar-bg"><div class="bar-fill" style="width:${p}%;">${p.toFixed(1)}%</div></div>
+                    <div class="bar-pct">${p.toFixed(1)}%</div>
+                </div>`;
+            }).join('');
+        }
+        
+        const big = document.getElementById('brasilMCBig');
+        if (big) big.textContent = (probClasif['Brasil'] || 0).toFixed(1) + '%';
+
+        const champSorted = TEAM_NAMES.slice().sort((a, b) => probChamp[b] - probChamp[a]);
+        const champContainer = document.getElementById('championProbs');
+        if (champContainer) {
+            champContainer.innerHTML = champSorted.map(name => {
+                const p = probChamp[name] || 0;
+                const isB = name === 'Brasil';
+                return `<div class="bar-row ${isB ? 'brasil-bar' : ''}">
+                    <div class="bar-label"><img src="${teamImg(name)}" alt="${name}" class="flag-img">${name}</div>
+                    <div class="bar-bg"><div class="bar-fill" style="width:${p}%;">${p.toFixed(1)}%</div></div>
+                    <div class="bar-pct">${p.toFixed(1)}%</div>
+                </div>`;
+            }).join('');
+        }
+        const standings = computeStandings();
+        renderBrasilHero(standings);
+    }
+
+    function renderBrasilPath() {
+        const container = document.getElementById('brasilPathList');
+        if (!container) return;
+        const brasilMatches = ALL_MATCHES
+            .filter(m => m.home === 'Brasil' || m.away === 'Brasil')
+            .sort((a, b) => a.day - b.day || a.time.localeCompare(b.time));
+
+        container.innerHTML = brasilMatches.map(m => {
+            const done = m.homeGoals !== null && m.awayGoals !== null && m.homeGoals !== undefined && m.awayGoals !== undefined;
+            const hImg = teamImg(m.home);
+            const aImg = teamImg(m.away);
+            let text;
+            if (done) {
+                text = `<img src="${hImg}" class="flag-img" style="margin-right:4px;"> ${m.home} <strong>${m.homeGoals} - ${m.awayGoals}</strong> ${m.away} <img src="${aImg}" class="flag-img" style="margin-left:4px;">`;
+            } else {
+                text = `<img src="${hImg}" class="flag-img" style="margin-right:4px;"> ${m.home} vs ${m.away} <img src="${aImg}" class="flag-img" style="margin-left:4px;">`;
+            }
+            return `<li class="path-item ${done ? 'done' : 'pending'}">
+                <span class="path-icon">${done ? '✅' : '⏳'}</span>
+                <span style="flex:1; display:flex; align-items:center; gap:4px;">${text}</span>
+                <span style="font-size:0.7rem; color:#8aa08a;">F${m.day} · ${m.time}</span>
+            </li>`;
+        }).join('');
+    }
+
+    function renderFixture() {
+        const container = document.getElementById('fixtureContainer');
+        if (!container) return;
+
+        function matchHtml(m, editable) {
+            const hasResult = m.homeGoals !== null && m.awayGoals !== null && m.homeGoals !== undefined && m.awayGoals !== undefined;
+            const hImg = teamImg(m.home);
+            const aImg = teamImg(m.away);
+
+            if (!editable) {
+                return `<div class="match-row">
+                    <span class="match-time">${m.time}</span>
+                    <div class="team-home"><span>${m.home}</span><img src="${hImg}" alt="${m.home}" class="flag-img"></div>
+                    <div class="match-score">${m.homeGoals} - ${m.awayGoals}</div>
+                    <div class="team-away"><img src="${aImg}" alt="${m.away}" class="flag-img"><span>${m.away}</span></div>
+                </div>`;
+            }
+            return `<div class="match-row" data-day="${m.day}" data-home="${m.home}" data-away="${m.away}">
+                <span class="match-time">${m.time}</span>
+                <div class="team-home"><span>${m.home}</span><img src="${hImg}" alt="${m.home}" class="flag-img"></div>
+                <div class="match-score">
+                    <input type="number" min="0" max="20" class="home-goals" value="${hasResult ? m.homeGoals : ''}" placeholder="-">
+                    -
+                    <input type="number" min="0" max="20" class="away-goals" value="${hasResult ? m.awayGoals : ''}" placeholder="-">
+                </div>
+                <div class="team-away"><img src="${aImg}" alt="${m.away}" class="flag-img"><span>${m.away}</span></div>
+            </div>`;
+        }
+
+        container.innerHTML = `
+            <div class="fixture-day">
+                <h3>📌 Fecha 1 (disputada)</h3>
+                ${FECHA1.map(m => matchHtml({ ...m, day: 1 }, false)).join('')}
+            </div>
+            <div class="fixture-day">
+                <h3>📝 Fecha 2 (editable)</h3>
+                ${FECHA2.map(m => matchHtml({ ...m, day: 2 }, true)).join('')}
+            </div>
+            <div class="fixture-day">
+                <h3>📝 Fecha 3 (editable)</h3>
+                ${FECHA3.map(m => matchHtml({ ...m, day: 3 }, true)).join('')}
+            </div>
+            <div class="fixture-day">
+                <h3>🏆 Final · 16:20</h3>
+                <div class="match-row" style="background:#001d3d; border:2px dashed #FFDF00; grid-template-columns: 70px 1fr auto 1fr;">
+                    <span class="match-time" style="background:#FFDF00; color:#002776;">16:20</span>
+                    <div class="team-home"><span>1° de la tabla</span></div>
+                    <div class="match-score" style="color:#FFDF00; border-color:#FFDF00;">VS</div>
+                    <div class="team-away"><span>2° de la tabla</span></div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Delegación de eventos para los inputs del Fixture
+    document.getElementById('fixtureContainer').addEventListener('input', (e) => {
+        if (e.target.classList.contains('home-goals') || e.target.classList.contains('away-goals')) {
+            const row = e.target.closest('.match-row');
+            if (!row) return;
+            const day = parseInt(row.dataset.day, 10);
+            const home = row.dataset.home;
+            const away = row.dataset.away;
+            const hIn = row.querySelector('.home-goals');
+            const aIn = row.querySelector('.away-goals');
+            if (!hIn || !aIn) return;
+
+            const hg = hIn.value === '' ? null : parseInt(hIn.value, 10);
+            const ag = aIn.value === '' ? null : parseInt(aIn.value, 10);
+            const arr = day === 2 ? FECHA2 : FECHA3;
+            const match = arr.find(m => m.home === home && m.away === away);
+            
+            if (match) {
+                match.homeGoals = isNaN(hg) ? null : hg;
+                match.awayGoals = isNaN(ag) ? null : ag;
+                saveToStorage();
+                const status = document.getElementById('saveStatus');
+                if (status) status.textContent = 'Guardado automáticamente en este celular.';
+                // Mientras se escribe no reconstruimos el fixture para conservar el foco.
+                // La tabla se recalcula al completar el marcador o al salir del campo.
+            }
+        }
+    });
+
+    // Al salir del input, re-renderizamos el fixture completo para formatear bien
+    document.getElementById('fixtureContainer').addEventListener('change', (e) => {
+        if (e.target.classList.contains('home-goals') || e.target.classList.contains('away-goals')) {
+            renderAll(false);
+        }
+    });
+
+    function renderFinal(standings) {
+        const box = document.getElementById('finalProjectionBox');
+        if (!box) return;
+        const top2 = standings.slice(0, 2);
+        if (top2.length < 2) return;
+        box.innerHTML = `
+            <div class="final-team"><img src="${top2[0].img}" alt="${top2[0].name}"><span>${top2[0].name}</span></div>
+            <div class="final-vs">VS</div>
+            <div class="final-team"><img src="${top2[1].img}" alt="${top2[1].name}"><span>${top2[1].name}</span></div>
+        `;
+    }
+
+    function renderScenarios(standings) {
+        const brasil = standings.find(t => t.name === 'Brasil');
+        const mcProb = currentMC ? (currentMC.probClasif['Brasil'] || 0) : 0;
+
+        const container = document.getElementById('scenarioContainer');
+        if (container) {
+            container.innerHTML = `
+                <div class="scenario-card ideal">
+                    <h4>✅ Escenario ideal</h4>
+                    <p>Brasil gana todos sus partidos restantes (Bélgica, Noruega, Inglaterra, Paraguay) y termina como líder o segundo. Con ${brasil.PTS} pts actuales, sumar 12 más lo consolida en la final.</p>
+                </div>
+                <div class="scenario-card favorable">
+                    <h4>⚖️ Escenario favorable</h4>
+                    <p>Brasil suma 2 victorias y 1 empate en sus 4 partidos pendientes: obtiene 7 puntos adicionales. La clasificación dependerá también de los resultados de sus rivales.</p>
+                </div>
+                <div class="scenario-card risk">
+                    <h4>⚠️ Escenario de riesgo</h4>
+                    <p>Brasil pierde 2 o más partidos y depende de otros resultados. Noruega e Inglaterra podrían superarlo. Probabilidad actual: ${mcProb}%.</p>
+                </div>
+            `;
+        }
+
+        const f2Container = document.getElementById('fecha2Analysis');
+        if (f2Container) {
+            f2Container.innerHTML = `
+                <p style="font-size:0.9rem; line-height:1.7; color:#c8d8c8;">
+                    <strong style="color:#27ae60;">Favorecen a Brasil:</strong> Victoria de Brasil sobre Bélgica y Noruega. Empate entre España e Inglaterra. Derrota de Argentina y Paraguay.<br>
+                    <strong style="color:#c0392b;">Perjudican a Brasil:</strong> Victorias de Noruega e Inglaterra. Si Argentina suma, se acerca.<br>
+                    <strong style="color:#FFDF00;">Partidos clave:</strong> Bélgica vs Brasil, Brasil vs Noruega y España vs Inglaterra.
+                </p>
+            `;
+        }
+
+        const f3Container = document.getElementById('fecha3Analysis');
+        if (f3Container) {
+            f3Container.innerHTML = `
+                <p style="font-size:0.9rem; line-height:1.7; color:#c8d8c8;">
+                    Brasil debe sumar al menos <strong style="color:#FFDF00;">6 puntos</strong> de los 12 posibles para asegurar la clasificación sin depender de terceros. 
+                    Si gana vs Inglaterra y vs Paraguay, clasifica directamente. Si pierde alguno, necesitará que Noruega o Inglaterra no sumen.
+                </p>
+            `;
+        }
+
+        const impactContainer = document.getElementById('impactAnalysis');
+        if (impactContainer) {
+            impactContainer.innerHTML = `
+                <div class="stat-pill"><div class="pill-label">Si Brasil gana todo</div><div class="pill-value">~95%</div></div>
+                <div class="stat-pill"><div class="pill-label">Si Brasil empata 2</div><div class="pill-value">~72%</div></div>
+                <div class="stat-pill"><div class="pill-label">Si Brasil pierde 2</div><div class="pill-value">~35%</div></div>
+            `;
+        }
+    }
+
+    function renderStats(standings) {
+        const pills = document.getElementById('statsPills');
+        if (!pills) return;
+        const topScorer = [...standings].sort((a, b) => b.GF - a.GF)[0];
+        const bestDefense = [...standings].sort((a, b) => a.GC - b.GC)[0];
+        const bestDG = [...standings].sort((a, b) => b.DG - a.DG)[0];
+        const mostWins = [...standings].sort((a, b) => b.PG - a.PG)[0];
+        
+        pills.innerHTML = `
+            <div class="stat-pill"><div class="pill-label">⚽ Equipo más goleador</div><div class="pill-value"><img src="${topScorer.img}" class="flag-img">${topScorer.name} · ${topScorer.GF} GF</div></div>
+            <div class="stat-pill"><div class="pill-label">🛡️ Mejor defensa</div><div class="pill-value"><img src="${bestDefense.img}" class="flag-img">${bestDefense.name} · ${bestDefense.GC} GC</div></div>
+            <div class="stat-pill"><div class="pill-label">📈 Mayor dif. de gol</div><div class="pill-value"><img src="${bestDG.img}" class="flag-img">${bestDG.name} · ${bestDG.DG > 0 ? '+' : ''}${bestDG.DG}</div></div>
+            <div class="stat-pill"><div class="pill-label">🏅 Más victorias</div><div class="pill-value"><img src="${mostWins.img}" class="flag-img">${mostWins.name} · ${mostWins.PG} PG</div></div>
+        `;
+
+        const offContainer = document.getElementById('offensiveRanking');
+        if (offContainer) {
+            const sortedOff = [...standings].sort((a, b) => b.GF - a.GF);
+            const maxGF = Math.max(...sortedOff.map(t => t.GF), 1);
+            offContainer.innerHTML = sortedOff.map(t => {
+                const w = (t.GF / maxGF) * 100;
+                const isB = t.name === 'Brasil';
+                return `<div class="bar-row ${isB ? 'brasil-bar' : ''}">
+                    <div class="bar-label"><img src="${t.img}" alt="${t.name}" class="flag-img">${t.name}</div>
+                    <div class="bar-bg"><div class="bar-fill" style="width:${w}%;">${t.GF}</div></div>
+                    <div class="bar-pct">${t.GF}</div>
+                </div>`;
+            }).join('');
+        }
+
+        const defContainer = document.getElementById('defensiveRanking');
+        if (defContainer) {
+            const sortedDef = [...standings].sort((a, b) => a.GC - b.GC);
+            const maxGC = Math.max(...sortedDef.map(t => t.GC), 1);
+            defContainer.innerHTML = sortedDef.map(t => {
+                const w = (t.GC / maxGC) * 100;
+                const isB = t.name === 'Brasil';
+                return `<div class="bar-row ${isB ? 'brasil-bar' : ''}">
+                    <div class="bar-label"><img src="${t.img}" alt="${t.name}" class="flag-img">${t.name}</div>
+                    <div class="bar-bg"><div class="bar-fill" style="width:${w}%; background:linear-gradient(90deg,#c0392b,#f1c40f);">${t.GC}</div></div>
+                    <div class="bar-pct">${t.GC}</div>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    function renderDashboard(standings) {
+        const quick = document.getElementById('dashboardQuickStats');
+        if (quick) {
+            const mcProb = currentMC ? (currentMC.probClasif['Brasil'] || 0) : 0;
+            const played = ALL_MATCHES.filter(m => m.homeGoals !== null && m.awayGoals !== null && m.homeGoals !== undefined && m.awayGoals !== undefined).length;
+            quick.innerHTML = `
+                <div class="stat-chip"><div class="label">Equipos</div><div class="value">${TEAM_NAMES.length}</div></div>
+                <div class="stat-chip"><div class="label">Partidos jugados</div><div class="value">${played}</div></div>
+                <div class="stat-chip"><div class="label">Prob. Brasil</div><div class="value">${mcProb}%</div></div>
+            `;
+        }
+        const brasilSummary = document.getElementById('dashboardBrasilSummary');
+        if (brasilSummary) {
+            const b = standings.find(t => t.name === 'Brasil');
+            const pos = standings.findIndex(t => t.name === 'Brasil') + 1;
+            const next = getNextBrasilMatch();
+            brasilSummary.innerHTML = `
+                <p style="font-size:0.95rem; line-height:1.8; color:#c8d8c8;">
+                    <img src="${b.img}" class="flag-img" style="margin-right:6px; width:32px; height:32px; vertical-align:middle;"> <strong>${b.name}</strong> se encuentra en la <strong style="color:#FFDF00;">${pos}ª posición</strong> con ${b.PTS} puntos.<br>
+                    GF: ${b.GF} · GC: ${b.GC} · DG: ${b.DG > 0 ? '+' : ''}${b.DG}<br>
+                    Próximo partido: <strong style="color:#FFDF00;">${next ? next.home + ' vs ' + next.away : '—'}</strong>
+                </p>
+            `;
+        }
+    }
+
+    function renderBrasilStatus(standings) {
+        const b = standings.find(t => t.name === 'Brasil');
+        const status = document.getElementById('brasilStatusDetail');
+        if (status) {
+            status.innerHTML = `
+                <div style="display:flex; flex-wrap:wrap; gap:16px;">
+                    <div><span style="color:#8aa08a;">PJ:</span> <strong>${b.PJ}</strong></div>
+                    <div><span style="color:#8aa08a;">PG:</span> <strong>${b.PG}</strong></div>
+                    <div><span style="color:#8aa08a;">PE:</span> <strong>${b.PE}</strong></div>
+                    <div><span style="color:#8aa08a;">PP:</span> <strong>${b.PP}</strong></div>
+                    <div><span style="color:#8aa08a;">GF:</span> <strong>${b.GF}</strong></div>
+                    <div><span style="color:#8aa08a;">GC:</span> <strong>${b.GC}</strong></div>
+                    <div><span style="color:#8aa08a;">DG:</span> <strong>${b.DG > 0 ? '+' : ''}${b.DG}</strong></div>
+                </div>
+            `;
+        }
+        const nextDetail = document.getElementById('brasilNextMatchDetail');
+        if (nextDetail) {
+            const next = getNextBrasilMatch();
+            if (next) {
+                nextDetail.innerHTML = `
+                    <div style="font-size:1.4rem; font-weight:800; color:#FFDF00; display:flex; align-items:center; gap:10px;">
+                        <img src="${teamImg(next.home)}" class="flag-img" style="width:32px; height:32px;"> ${next.home} vs ${next.away} <img src="${teamImg(next.away)}" class="flag-img" style="width:32px; height:32px;">
+                    </div>
+                    <div style="color:#8aa08a; margin-top:6px;">Fecha ${next.day} · ${next.time}</div>
+                `;
+            } else {
+                nextDetail.innerHTML = '<p style="color:#8aa08a;">No hay partidos pendientes de Brasil.</p>';
+            }
+        }
+    }
+
+    /* ============================================================
+       NAVEGACIÓN SIDEBAR
+    ============================================================ */
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.section');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (event) => {
+            event.preventDefault();
+            const target = item.dataset.section;
+            navItems.forEach(n => n.classList.toggle('active', n.dataset.section === target));
+            sections.forEach(s => s.classList.remove('active-section'));
+            const sec = document.getElementById('section-' + target);
+            if (sec) sec.classList.add('active-section');
+            if (['montecarlo', 'positioning', 'standings', 'scenarios', 'stats', 'final', 'brasil-center', 'dashboard', 'brasil-path', 'fixture'].includes(target)) {
+                renderAll();
+            }
+        });
+    });
+
+    /* ============================================================
+       RESET
+    ============================================================ */
+    document.getElementById('resetDataBtn').addEventListener('click', () => {
+        if (!confirm('¿Querés borrar todos los resultados ingresados de las fechas 2 y 3?')) return;
+        [...FECHA2, ...FECHA3].forEach(m => { m.homeGoals = null; m.awayGoals = null; });
+        saveToStorage();
+        renderAll();
+    });
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    loadFromStorage();
+    renderAll();
+
+    window.renderAll = renderAll;
+
+
+    // Copia de seguridad local de los resultados ingresados.
+    const exportBtn = document.getElementById('exportDataBtn');
+    if (exportBtn) exportBtn.addEventListener('click', () => {
+        const payload = {
+            app: 'Torneo de Integración ALEX · Femenino',
+            exportedAt: new Date().toISOString(),
+            results: [...FECHA2, ...FECHA3]
+                .filter(m => m.homeGoals !== null && m.awayGoals !== null)
+                .map(m => ({ day: m.day, home: m.home, away: m.away, homeGoals: m.homeGoals, awayGoals: m.awayGoals }))
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'respaldo-torneo-alex.json'; a.click();
+        URL.revokeObjectURL(url);
+    });
+    const importInput = document.getElementById('importDataInput');
+    if (importInput) importInput.addEventListener('change', async (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        try {
+            const parsed = JSON.parse(await file.text());
+            const records = Array.isArray(parsed) ? parsed : parsed.results;
+            if (!Array.isArray(records)) throw new Error('Formato inválido');
+            [...FECHA2, ...FECHA3].forEach(m => { m.homeGoals = null; m.awayGoals = null; });
+            records.forEach(r => {
+                const match = [...FECHA2, ...FECHA3].find(m =>
+                    m.day === Number(r.day) && m.home === r.home && m.away === r.away);
+                const hg = Number(r.homeGoals), ag = Number(r.awayGoals);
+                if (match && Number.isInteger(hg) && Number.isInteger(ag) && hg >= 0 && ag >= 0 && hg <= 20 && ag <= 20) {
+                    match.homeGoals = hg; match.awayGoals = ag;
+                }
+            });
+            saveToStorage(); renderAll();
+            alert('Respaldo importado correctamente.');
+        } catch (err) {
+            alert('No se pudo importar el archivo. Verificá que sea un respaldo de Torneo ALEX.');
+        }
+        event.target.value = '';
+    });
+
+    // Registro PWA: permite instalar la app y conservar recursos para uso offline.
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js').catch(err =>
+                console.warn('No se pudo registrar el modo offline:', err)
+            );
+        });
+    }
+
+</script>
+</body>
+</html>

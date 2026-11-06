@@ -1,0 +1,32 @@
+# Torneo de Integración ALEX · PWA
+
+## Qué incluye
+- Aplicación web progresiva instalable (PWA).
+- Interfaz adaptada a celulares y navegación inferior.
+- Carga de resultados para fechas 2 y 3.
+- Actualización automática de tabla, estadísticas, camino de Brasil y simulaciones al completar un marcador.
+- Guardado local en el navegador/dispositivo.
+- Exportación e importación de respaldos JSON.
+- Caché de recursos para abrir la app sin conexión después de la primera visita online.
+
+## Publicación gratuita para instalar en el celular
+Una PWA debe abrirse desde una dirección HTTPS (no alcanza con abrir `index.html` desde el explorador de archivos).
+
+Una opción gratuita es GitHub Pages:
+1. Crear un repositorio en GitHub y subir el contenido de esta carpeta (index.html, manifest.json, service-worker.js, icons/ e img/).
+2. En el repositorio, abrir Settings → Pages.
+3. Seleccionar Deploy from a branch, elegir la rama principal y la carpeta raíz, y guardar.
+4. Abrir la URL HTTPS que genere GitHub Pages desde Chrome en Android o Safari en iPhone.
+5. Android: menú del navegador → Instalar aplicación / Agregar a pantalla principal.
+   iPhone: botón Compartir → Agregar a pantalla de inicio.
+
+## Uso de resultados
+- En la pestaña Partidos, cargar los goles de ambos equipos.
+- Al salir del campo, la tabla y las métricas se recalculan.
+- Los resultados se guardan en ese navegador y dispositivo.
+- Para trasladarlos a otro celular, ir a Más → Exportar respaldo; en el nuevo dispositivo, usar Importar respaldo.
+
+## Importante
+- Los resultados no se sincronizan automáticamente entre dispositivos.
+- La Fecha 1 permanece fija como en el archivo original; las Fechas 2 y 3 son editables.
+- La simulación Monte Carlo es orientativa y depende del modelo probabilístico simplificado.
